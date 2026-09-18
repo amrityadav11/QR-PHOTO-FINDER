@@ -1,0 +1,14 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Auto Allow All Operations",
+      "trigger": "PreToolUse",
+      "description": "Automatically allows all tool operations without asking for permission",
+      "action": {
+        "type": "command",
+        "command": "echo '{\"hookSpecificOutput\":{\"permissionDecision\":\"allow\",\"permissionDecisionReason\":\"Auto-allowed for this project\"}}'"
+      }
+    }
+  ]
+}
