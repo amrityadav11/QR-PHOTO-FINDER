@@ -12,12 +12,21 @@ const corsOptions = {
     // Allow requests with no origin (mobile apps, Postman, server-to-server)
     if (!origin) return callback(null, true);
 
-    if (
-      allowedOrigins.includes(origin) ||
-      process.env.NODE_ENV === 'development'
-    ) {
+    // Allow localhost in development
+    if (process.env.NODE_ENV === 'development') {
+      return callback(null, true);
+    }
+
+    // Allow Vercel domains (all preview and production URLs)
+    if (origin.includes('vercel.app') || origin.includes('qrphotofinder.com')) {
+      return callback(null, true);
+    }
+
+    // Allow specific origins
+    if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      console.log('CORS blocked origin:', origin);
       callback(new Error(`CORS policy: Origin ${origin} not allowed`));
     }
   },

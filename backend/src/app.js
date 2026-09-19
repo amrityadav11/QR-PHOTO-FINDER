@@ -29,6 +29,9 @@ const adminRoutes = require('./routes/adminRoutes');
 
 const app = express();
 
+// ─── Configure trust proxy for Render ───────────────────────────────────────
+app.set('trust proxy', 1);
+
 // ─── Configure external services ────────────────────────────────────────────
 configureCloudinary();
 
