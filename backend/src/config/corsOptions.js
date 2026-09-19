@@ -3,6 +3,8 @@ const allowedOrigins = [
   'http://localhost:3001',
   'https://qrphotofinder.com',
   'https://www.qrphotofinder.com',
+  'https://qr-photo-finder.vercel.app',
+  'https://qr-photo-finder-frontend-37qh-3qv7e4dkl-amrityadav-87591c87.vercel.app',
 ];
 
 const corsOptions = {
