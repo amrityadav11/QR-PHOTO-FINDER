@@ -8,5 +8,10 @@
         "distDir": "build"
       }
     }
-  ]
+  ],
+  "build": {
+    "env": {
+      "CI": "false"
+    }
+  }
 }
