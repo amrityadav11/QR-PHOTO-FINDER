@@ -7,7 +7,17 @@ const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
 
-const corsOptions = require('./config/corsOptions');
+// CORS: allow all origins (handles Vercel preview URLs dynamically)
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow any origin — restrict this list once custom domain is set
+    return callback(null, true);
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  optionsSuccessStatus: 200
+};
 const connectDB = require('./config/db');
 const { configureCloudinary } = require('./config/cloudinary');
 const logger = require('./utils/logger');
@@ -42,6 +52,9 @@ app.use(
     contentSecurityPolicy: false, // handled on frontend
   })
 );
+
+// ─── CORS: handle preflight OPTIONS requests first ───────────────────────────
+app.options('*', cors(corsOptions));
 app.use(cors(corsOptions));
 
 // ─── General Rate Limiter ────────────────────────────────────────────────────

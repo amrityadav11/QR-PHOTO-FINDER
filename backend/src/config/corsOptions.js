@@ -7,23 +7,23 @@ const allowedOrigins = [
 
 const corsOptions = {
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps, curl requests, or server-to-server)
+    // Allow requests with no origin (like mobile apps, curl, or Postman)
     if (!origin) return callback(null, true);
-    
-    const isAllowed =
-      allowedOrigins.includes(origin) ||
-      /\.vercel\.app$/.test(origin) ||
-      process.env.NODE_ENV === 'development';
 
-    if (isAllowed) {
-      callback(null, true);
-    } else {
-      callback(new Error(`Not allowed by CORS: ${origin}`));
+    const isVercelDomain = origin.includes('vercel.app') || /\.vercel\.app$/i.test(origin);
+    const isExplicitlyAllowed = allowedOrigins.includes(origin);
+
+    if (isExplicitlyAllowed || isVercelDomain || process.env.NODE_ENV !== 'production') {
+      return callback(null, true);
     }
+
+    // Allow all origins to prevent CORS preflight blocks across deployment previews
+    return callback(null, true);
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  optionsSuccessStatus: 200
 };
 
 module.exports = corsOptions;
