@@ -81,6 +81,17 @@ app.use('/api', generalLimiter);
 // ─── Static uploads (dev only - use CDN in production) ───────────────────────
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
+// ─── Root Route ──────────────────────────────────────────────────────────────
+app.get('/', (req, res) => {
+  res.json({
+    success: true,
+    message: 'QR Photo Finder API is running',
+    healthCheck: '/api/health',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+  });
+});
+
 // ─── Health Check ─────────────────────────────────────────────────────────────
 app.get('/api/health', (req, res) => {
   res.json({
@@ -89,6 +100,14 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV,
   });
+});
+
+// ─── Auto-prefix /api fallback for legacy or misconfigured clients ────────────
+app.use((req, res, next) => {
+  if (req.path !== '/' && !req.path.startsWith('/api') && !req.path.startsWith('/uploads')) {
+    req.url = '/api' + req.url;
+  }
+  next();
 });
 
 // ─── API Routes ───────────────────────────────────────────────────────────────

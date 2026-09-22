@@ -1,7 +1,11 @@
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-const BASE_URL = process.env.REACT_APP_API_URL || '/api';
+let rawApiUrl = process.env.REACT_APP_API_URL || '/api';
+if (rawApiUrl.startsWith('http') && !rawApiUrl.endsWith('/api')) {
+  rawApiUrl = rawApiUrl.replace(/\/+$/, '') + '/api';
+}
+const BASE_URL = rawApiUrl;
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -36,7 +40,7 @@ api.interceptors.response.use(
       if (!window.location.pathname.startsWith('/login') &&
           !window.location.pathname.startsWith('/register') &&
           !window.location.pathname.startsWith('/e/')) {
-        toast.error('Your session has expired. Please log in again.');
+        toast.error(message || 'Your session has expired. Please log in again.');
         window.location.href = '/login';
       }
     }

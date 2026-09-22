@@ -1,17 +1,24 @@
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://qr-photo-finder.vercel.app'
-];
+  'http://localhost:5000',
+  'https://qr-photo-finder.vercel.app',
+  process.env.CLIENT_URL
+].filter(Boolean);
 
 const corsOptions = {
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
+    // Allow requests with no origin (like mobile apps, curl requests, or server-to-server)
     if (!origin) return callback(null, true);
     
-    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+    const isAllowed =
+      allowedOrigins.includes(origin) ||
+      /\.vercel\.app$/.test(origin) ||
+      process.env.NODE_ENV === 'development';
+
+    if (isAllowed) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error(`Not allowed by CORS: ${origin}`));
     }
   },
   credentials: true,
